@@ -61,7 +61,13 @@ ui <- fluidPage(
                plotOutput("histogram")
                ),
 
-      tabPanel("Real Data")
+      tabPanel("Works Cited",
+               p("DeGroot, Morris H. “A Conversation with C. R. Rao.” Statistical Science, vol. 2,
+               no. 1, 1987, pp. 53–67. JSTOR, http://www.jstor.org/stable/2245614. Accessed 28 May 2025."),
+               p(
+                 "Rice, J. A. (1988). Mathematical statistics and data analysis. Brooks/Cole Pub. Co., pp 241-253."
+               )
+               )
       
     )
 )

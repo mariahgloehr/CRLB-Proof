@@ -23,9 +23,18 @@ ui <- fluidPage(
                fluidRow(column(
                  6,
                  p(
-                 
                  "The Cramér-Rao Lower Bound, also referred to as the the Cramér-Rao inequality,
-                 is a fundamental result of statistics."
+                 is a fundamental result of statistics. Its derivation is credited to 
+                 Calyampudi Radhakrishna Rao, who was born in Hadagali, Karnataka State, India
+                 on September 10, 1920. He obtained masters in both mathematics and statisitics in India
+                 before completeing his PhD at Cambridge University in 1948, where the renowned R.A. Fisher
+                 was his advisor."
+               ),
+               p(
+                 "The Cramér-Rao Lower Bound states that the reciprocal of the Fisher information bounds
+                 the variance of an unbiased estimator from below. Thus, if the variance of a given
+                 unbiased estimator achieves this bound, it is the most efficient estimator possible.
+                 Rao derived the lower bound in 1945."
                )),
                column(
                  6, img(src = "title_image.jpg", width = "100%"), p("Calyampudi Radhakrishna Rao, Credit Tejaswini Rao")

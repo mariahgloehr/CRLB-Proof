@@ -18,8 +18,18 @@ ui <- fluidPage(
     titlePanel("Proof of the Cramer-Rao Lower Bound"),
     
     tabsetPanel(
-      #create four tabs, intro and then one for critieria
-      tabPanel("Introduction"),
+      #create four tabs, intro and then one for criteria
+      tabPanel("Introduction",
+               fluidRow(column(
+                 6,
+                 p(
+                 
+                 "The Cramér-Rao Lower Bound, also referred to as the the Cramér-Rao inequality,
+                 is a fundamental result of statistics."
+               )),
+               column(
+                 6, img(src = "title_image.jpg", width = "100%"), p("Calyampudi Radhakrishna Rao, Credit Tejaswini Rao")
+               ))),
       
       tabPanel("Proof",
                uiOutput("proof")),

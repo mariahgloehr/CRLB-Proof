@@ -78,11 +78,14 @@ server <- function(input, output) {
   
   output$proof <- renderUI({
     withMathJax( HTML('
-      <p><strong>Theorem (CRLB):</strong> If \\(X_1, ..., X_n\\) are an iid sample from a distribution with pdf \\(f(X|\\theta)\\), then an unbiased estimator \\(\\hat{\\theta}\\) of \\(\\theta\\) satisfies:</p>
+      <p><strong>Theorem (CRLB):</strong> If \\(X_1, ..., X_n\\) are an iid sample from a distribution with 
+      pdf \\(f(X|\\theta)\\) where \\(f\\) satisfies certain smoothness criteria,
+      then an unbiased estimator \\(\\hat{\\theta}\\) of \\(\\theta\\) satisfies:</p>
       $$V(\\hat{\\theta}) \\geq \\frac{1}{n \\cdot \\mathbb{E}\\left[\\left(\\frac{d}{d\\theta}\\ln{f(X|\\theta)}\\right)^2\\right]}$$
 
       <p><strong>Proof:</strong></p>
-      <p> Let \\(\\hat{\\theta} = \\hat{\\theta}(X_1, ..., X_n)\\) be an unbiased estimator of \\(\\theta\\) and let 
+      <p> Let \\(\\hat{\\theta} = \\hat{\\theta}(X_1, ..., X_n)\\) be an unbiased estimator 
+      of \\(\\theta\\) and let 
       $$Z = \\sum_{i=1}^n \\frac{\\partial}{\\partial\\theta}\\ln{f(X_i|\\theta)}.$$ </p>
       <p> We claim that $$\\mathbb{E}[Z] = 0.$$ </p>
       <p>We observe that since \\(\\int f(X_i|\\theta)dx_i = 1,\\) 
@@ -90,18 +93,24 @@ server <- function(input, output) {
       
       <p> Given the identity 
       $$\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad
-      \\frac{\\partial}{\\partial\\theta} \\ln f(x|\\theta) = \\frac{1}{f(x|\\theta)} \\cdot \\frac{\\partial}{\\partial\\theta} f(x|\\theta) 
+      \\frac{\\partial}{\\partial\\theta} \\ln f(x|\\theta) 
+      = \\frac{1}{f(x|\\theta)} \\cdot \\frac{\\partial}{\\partial\\theta} f(x|\\theta) 
       \\quad \\quad \\quad \\quad\\quad\\quad\\quad\\quad (1) $$</p>
       
       <p> which can be rearranged as 
-      $$\\frac{\\partial}{\\partial\\theta}f(X_i|\\theta) = \\bigg[\\frac{\\partial}{\\partial\\theta}\\ln{f(X_i|\\theta)} \\bigg]f(X_i|\\theta)$$  </p>
+      $$\\frac{\\partial}{\\partial\\theta}f(X_i|\\theta) 
+      = \\bigg[\\frac{\\partial}{\\partial\\theta}\\ln{f(X_i|\\theta)} \\bigg]f(X_i|\\theta)$$  </p>
      
       <p> we then have 
-      $$0 =  \\frac{\\partial}{\\partial\\theta}\\int f(X_i|\\theta)dx_i = \\int \\bigg[\\frac{\\partial}{\\partial\\theta}\\ln{f(X_i|\\theta)} \\bigg]f(X_i|\\theta)dx_i $$
+      $$0 =  \\frac{\\partial}{\\partial\\theta}\\int f(X_i|\\theta)dx_i 
+      = \\int \\bigg[\\frac{\\partial}{\\partial\\theta}\\ln{f(X_i|\\theta)} \\bigg]f(X_i|\\theta)dx_i $$
       using our assumption of interchanging differentiation and integration.</p>
       
       <p> Then,
-      $$\\mathbb{E}[Z] = \\mathbb{E}\\bigg[ \\sum_{i=1}^n \\frac{\\partial}{\\partial\\theta}\\ln{f(X_i|\\theta)}\\bigg]$$ </p>
+      $$\\mathbb{E}[Z] = 
+      \\mathbb{E}\\bigg[ \\sum_{i=1}^n \\frac{\\partial}{\\partial\\theta}\\ln{f(X_i|\\theta)}\\bigg]$$ 
+      </p>
+      
       <p>
       $$\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad
       = \\sum_{i=1}^n \\mathbb{E}\\bigg[\\frac{\\partial}{\\partial\\theta}\\ln{f(X_i|\\theta)}\\bigg]
@@ -118,7 +127,8 @@ server <- function(input, output) {
       $$Var(Z) = n \\cdot \\mathbb{E}\\bigg[\\big(\\frac{\\partial}{\\partial\\theta}\\ln{f(X|\\theta)}  \\big)^2\\bigg]. $$ </p>
       
       <p> Since the  \\(X_i \\)s are iid, we start with 
-      $$Var\\bigg[\\sum_{i=1}^n \\frac{\\partial}{\\partial\\theta}\\ln{f(X_i; \\theta)}\\bigg] = n \\cdot  Var\\bigg[\\frac{\\partial}{\\partial\\theta}\\ln{f(X; \\theta)}\\bigg]$$
+      $$Var\\bigg[\\sum_{i=1}^n \\frac{\\partial}{\\partial\\theta}\\ln{f(X_i; \\theta)}\\bigg] 
+      = n \\cdot  Var\\bigg[\\frac{\\partial}{\\partial\\theta}\\ln{f(X; \\theta)}\\bigg]$$
       $$ \\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad\\quad
       = n\\bigg( \\mathbb{E}\\bigg[\\bigg(\\frac{\\partial}{\\partial\\theta}\\ln{f(X_i; \\theta)} \\bigg)^2 \\bigg] - \\mathbb{E}\\bigg[\\frac{\\partial}{\\partial\\theta}\\ln{f(X_i; \\theta)} \\bigg]^2 \\bigg)$$
       </p>

@@ -54,7 +54,7 @@ ui <- fluidPage(
                 #choose parameter value
                 textInput(
                    "parameter",
-                   "Parameter Value (SD for the Normal distribution with mean of 0)",
+                   "Parameter Value (for the Normal distribution, this is the SD for mean of 0)",
                    value = 1
                  )
                  ),

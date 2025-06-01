@@ -49,16 +49,17 @@ ui <- fluidPage(
                  #choose RV distribution
                  radioButtons("dist",
                              "Distribution",
-                             choices = c("Normal", "Exponential", "Poisson")),
+                             choices = c("Normal", "Exponential", "Poisson"),
+                             selected = "Poisson"),
                 #choose parameter value
                 textInput(
                    "parameter",
-                   "Parameter Value",
+                   "Parameter Value (SD for the Normal distribution with mean of 0)",
                    value = 1
                  )
                  ),
-               #plot histogram
-               plotOutput("histogram")
+               #plot variance
+               plotOutput("variance")
                ),
 
       tabPanel("Works Cited",
@@ -74,7 +75,87 @@ ui <- fluidPage(
 
 # Define server logic
 server <- function(input, output) {
-  
+  output$variance <- renderPlot({
+    # first we choose a distribution (Normal, Exponential, Poisson) and sample from it
+    
+    # choose distribution and parameter
+    param <- as.numeric(input$parameter)
+    distribution <- input$dist
+    fisher_info <- function(param, distribution) {
+      
+      if (distribution == "Poisson") {
+        return (1/param)
+      }
+      if (distribution == "Exponential") {
+        return (1/param)^2
+      }
+      if (distribution == "Normal") {
+        return (2/(param^2))
+      }
+    }
+    n <- 100
+    estimate_variance <- function(param, distribution, n) {
+      if (distribution == "Poisson") {
+        
+        estimates <- numeric(25)
+        
+        for (i in 1:25) {
+          sample <- rpois(n, param)
+          
+          estimates[i] <- mean(sample)
+        }
+        
+        return (var(estimates))
+      }
+      
+      if (distribution == "Exponential") {
+        
+        estimates <- numeric(25)
+        
+        for (i in 1:25) {
+          sample <- rexp(n, rate = param)
+          
+          estimates[i] <- 1/mean(sample)
+        }
+        
+        return (var(estimates))
+      }
+      if (distribution == "Normal") {
+        
+        estimates <- numeric(25)
+        
+        for (i in 1:25) {
+          sample <- rnorm(n, mean = 0, sd = param)
+          
+          estimates[i] <- sd(sample)
+        }
+        
+        return (var(estimates))
+      }
+    }
+    
+    
+    
+    crlb <- function(n){
+      return (1/(fisher_info(param, distribution) * n))
+    }
+    
+    variances <- numeric(n)
+    crlb_vals <- numeric(n)
+    x_vals <- 1:n
+    
+    for (sample_size in 1:n) {
+      crlb_vals[sample_size] <- crlb(sample_size)
+      variances[sample_size] <- estimate_variance(param=param, distribution=distribution, n = sample_size)
+    }
+    
+    df <- tibble(variances, crlb_vals, x_vals) %>% rename("CRLB" = crlb_vals, "Sample Variance" = variances) %>% 
+      pivot_longer(cols = c("CRLB","Sample Variance"), names_to = "data_type", values_to = "values")
+    ggplot(df) +
+      geom_line(aes(x = x_vals, y = values, color = data_type)) +
+      theme_bw() +
+      labs(y = "Estimator Variance", x = "Sample Size", color = "Value")
+  })
   
   output$proof <- renderUI({
     withMathJax( HTML('

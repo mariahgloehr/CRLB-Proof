@@ -44,24 +44,35 @@ ui <- fluidPage(
                uiOutput("proof")),
 
       tabPanel("Simulation",
-               
-               inputPanel(
-                 #choose RV distribution
-                 radioButtons("dist",
-                             "Distribution",
-                             choices = c("Normal", "Exponential", "Poisson"),
-                             selected = "Poisson"),
-                #choose parameter value
-                textInput(
-                   "parameter",
-                   "Parameter Value (for the Normal distribution, this is the SD for mean of 0)",
-                   value = 1
-                 )
+               fluidRow(column(
+                 6,
+                 p(
+                   "In order to simulate the effect of the Cramer-Rao Lower Bound,
+                 we first choose a distribution to sample from. Then, we take a
+                 finite number of samples from the distribution and compute the
+                 maximum likelihood estimate for each. We then take the variance
+                 of the collection of estimates. We repeat this for increasingly
+                 large values of n. The asymptotic properties
+                 of the MLE mean that for a distribution, the variance of the MLE
+                 should converge to the Cramer-Rao Lower Bound as n increases."
+                 )),
+                 column(
+                   6, p(inputPanel(
+                     #choose RV distribution
+                     radioButtons("dist",
+                                  "Distribution",
+                                  choices = c("Normal", "Exponential", "Poisson"),
+                                  selected = "Poisson"),
+                     #choose parameter value
+                     textInput(
+                       "parameter",
+                       "Parameter Value (for the Normal distribution, this is the SD for mean of 0)",
+                       value = 1
+                     )), #plot variance
+                     p(plotOutput("variance"))
+                   ),
                  ),
-               #plot variance
-               plotOutput("variance")
-               ),
-
+                 )),
       tabPanel("Works Cited",
                p("DeGroot, Morris H. “A Conversation with C. R. Rao.” Statistical Science, vol. 2,
                no. 1, 1987, pp. 53–67. JSTOR, http://www.jstor.org/stable/2245614. Accessed 28 May 2025."),
@@ -140,14 +151,19 @@ server <- function(input, output) {
       return (1/(fisher_info(param, distribution) * n))
     }
     
-    variances <- numeric(n)
-    crlb_vals <- numeric(n)
-    x_vals <- 1:n
+    variances <- numeric(n-2)
+    crlb_vals <- numeric(n-2)
+    x_vals <- 3:n
     
-    for (sample_size in 1:n) {
+    print(length(crlb_vals))
+    print(length(x_vals))
+    print(length(variances))
+    
+    for (sample_size in 1:(n-2)) {
       crlb_vals[sample_size] <- crlb(sample_size)
       variances[sample_size] <- estimate_variance(param=param, distribution=distribution, n = sample_size)
     }
+    print(crlb_vals)
     
     df <- tibble(variances, crlb_vals, x_vals) %>% rename("CRLB" = crlb_vals, "Sample Variance" = variances) %>% 
       pivot_longer(cols = c("CRLB","Sample Variance"), names_to = "data_type", values_to = "values")

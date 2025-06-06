@@ -52,9 +52,11 @@ ui <- fluidPage(
                  finite number of samples from the distribution and compute the
                  maximum likelihood estimate for each. We then take the variance
                  of the collection of estimates. We repeat this for increasingly
-                 large values of n. The asymptotic properties
-                 of the MLE mean that for a distribution, the variance of the MLE
-                 should converge to the Cramer-Rao Lower Bound as n increases."
+                 large values of n. For each of the distributions, we use the
+                   bias-corected MLE as we require an unbiased estimator for
+                   the CRLB, but
+                   also we prefer an estimator that has an asymptotic variance that
+                   converges to the CRLB, like the MLE."
                  )),
                  column(
                    6, p(inputPanel(
@@ -126,7 +128,7 @@ server <- function(input, output) {
         for (i in 1:25) {
           sample <- rexp(n, rate = param)
           
-          estimates[i] <- 1/mean(sample)
+          estimates[i] <- ((n-1)/n)*(1/mean(sample))
         }
         
         return (var(estimates))
@@ -138,7 +140,7 @@ server <- function(input, output) {
         for (i in 1:25) {
           sample <- rnorm(n, mean = 0, sd = param)
           
-          estimates[i] <- sd(sample)
+          estimates[i] <- sum(sample)/(n-1)
         }
         
         return (var(estimates))
